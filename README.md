@@ -22,6 +22,7 @@
             .setAk(ak)
             .setApi(apiUrl)
             .setUid(userId)
+            .setExtra(extra)
             .setCommand(Command.START_SERVICE)
             .build();
     if (VERSION.SDK_INT < VERSION_CODES.O) {
