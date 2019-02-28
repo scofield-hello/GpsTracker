@@ -14,6 +14,8 @@ public class ServiceIntentBuilder {
 
     private int command;
 
+    private String extra;
+
     private Context mContext;
 
     private String notificationContent = "正在跟踪您的位置...";
@@ -40,6 +42,7 @@ public class ServiceIntentBuilder {
         intent.putExtra(MyService.EXTRA_AK, ak);
         intent.putExtra(MyService.EXTRA_API, api);
         intent.putExtra(MyService.EXTRA_UID, uid);
+        intent.putExtra(MyService.EXTRA_EXTRA, extra);
         return intent;
     }
 
@@ -55,6 +58,11 @@ public class ServiceIntentBuilder {
 
     public ServiceIntentBuilder setCommand(final int command) {
         this.command = command;
+        return this;
+    }
+
+    public ServiceIntentBuilder setExtra(final String extra) {
+        this.extra = extra;
         return this;
     }
 

@@ -37,6 +37,8 @@ public class MyService extends Service implements LocationCallback {
 
     public final static String EXTRA_UID = "uid";
 
+    public final static String EXTRA_EXTRA = "extra";
+
     public final static String EXTRA_COMMAND = "command";
 
     public final static String EXTRA_NOTIFICATION_ICON = "notification_icon";
@@ -50,6 +52,8 @@ public class MyService extends Service implements LocationCallback {
     private String ak;
 
     private String api;
+
+    private String extra;
 
     private GpsTracker mGpsTracker;
 
@@ -97,7 +101,7 @@ public class MyService extends Service implements LocationCallback {
         Log.d(TAG, "onLocationChanged: 获取到位置信息:" + location.toString());
         String latitude = String.valueOf(location.getLatitude());
         String longitude = String.valueOf(location.getLongitude());
-        threadPool.submit(new GpsUploadTask(ak, api, uid, latitude, longitude));
+        threadPool.submit(new GpsUploadTask(ak, api, uid, extra, latitude, longitude));
     }
 
     @Override
@@ -168,6 +172,7 @@ public class MyService extends Service implements LocationCallback {
                 ak = intent.getStringExtra(EXTRA_AK);
                 api = intent.getStringExtra(EXTRA_API);
                 uid = intent.getStringExtra(EXTRA_UID);
+                extra = intent.getStringExtra(EXTRA_EXTRA);
                 int notificationIcon = intent.getIntExtra(EXTRA_NOTIFICATION_ICON, 0);
                 String notificationTitle = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE);
                 String notificationContent = intent.getStringExtra(EXTRA_NOTIFICATION_CONTENT);
