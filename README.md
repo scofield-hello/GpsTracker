@@ -23,6 +23,8 @@
             .setApi(apiUrl)
             .setUid(userId)
             .setExtra(extra)
+            .setMinPeriod(5000L)
+            .setMinDistance(0.0F)
             .setCommand(Command.START_SERVICE)
             .build();
     if (VERSION.SDK_INT < VERSION_CODES.O) {
