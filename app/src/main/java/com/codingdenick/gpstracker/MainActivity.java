@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 .setAk("456ftygygbubhj7uyh7k9089")
                 .setApi("http://zjsf.lookmap.net/sqjz/jhsaijs")
                 .setUid("Userid")
+                .setExtra("extra")
                 .setCommand(Command.START_SERVICE)
                 .build();
         if (VERSION.SDK_INT < VERSION_CODES.O) {
