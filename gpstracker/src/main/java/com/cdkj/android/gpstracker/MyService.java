@@ -47,6 +47,10 @@ public class MyService extends Service implements LocationCallback {
 
     public final static String EXTRA_NOTIFICATION_CONTENT = "notification_content";
 
+    public final static String EXTRA_MIN_PERIOD = "min_period";
+
+    public final static String EXTRA_MIN_DISTANCE = "min_distance";
+
     private final static int ONGOING_NOTIFICATION_ID = 0x111;
 
     private String ak;
@@ -173,6 +177,8 @@ public class MyService extends Service implements LocationCallback {
                 api = intent.getStringExtra(EXTRA_API);
                 uid = intent.getStringExtra(EXTRA_UID);
                 extra = intent.getStringExtra(EXTRA_EXTRA);
+                long periodInMills = intent.getLongExtra(EXTRA_MIN_PERIOD, 10000L);
+                float distanceInMi = intent.getFloatExtra(EXTRA_MIN_DISTANCE, 0.0F);
                 int notificationIcon = intent.getIntExtra(EXTRA_NOTIFICATION_ICON, 0);
                 String notificationTitle = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE);
                 String notificationContent = intent.getStringExtra(EXTRA_NOTIFICATION_CONTENT);
@@ -181,9 +187,17 @@ public class MyService extends Service implements LocationCallback {
                 Preconditions.checkNotNull(uid);
                 Preconditions.checkNotNull(notificationTitle);
                 Preconditions.checkNotNull(notificationContent);
+                Preconditions.checkArgument(periodInMills >= 1000L);
+                Preconditions.checkArgument(distanceInMi >= 0.0F);
                 Preconditions.checkArgument(notificationIcon != 0);
                 createNotification(this, notificationIcon, notificationTitle, notificationContent);
-                mGpsTracker.start();
+                mGpsTracker.initConfiguration(periodInMills, distanceInMi);
+                if (mGpsTracker.isStart()) {
+                    mGpsTracker.stop();
+                    mGpsTracker.start();
+                } else {
+                    mGpsTracker.start();
+                }
                 break;
             case Command.STOP_SERVICE:
                 Log.d(TAG, "processCommand: 停止当前服务...");

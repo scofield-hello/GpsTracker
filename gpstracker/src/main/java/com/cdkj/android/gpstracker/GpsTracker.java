@@ -29,7 +29,11 @@ public class GpsTracker implements LocationListener {
 
     private LocationCallback mCallback;
 
+    private float mDistance = 0.0F;
+
     private LocationManager mLocationManager;
+
+    private long mPeriod = 10000L;
 
     private String mProvider;
 
@@ -91,6 +95,11 @@ public class GpsTracker implements LocationListener {
         return mLocationManager.getBestProvider(criteria, true);
     }
 
+    void initConfiguration(long period, float distance) {
+        mPeriod = period;
+        mDistance = distance;
+    }
+
     boolean isStart() {
         return mStart;
     }
@@ -99,7 +108,7 @@ public class GpsTracker implements LocationListener {
     void start() {
         if (!mStart) {
             mProvider = getBestProvider();
-            mLocationManager.requestLocationUpdates(mProvider, 10000L, 10.0F, this);
+            mLocationManager.requestLocationUpdates(mProvider, mPeriod, mDistance, this);
             Log.i(TAG, "start: 开始定位, 位置提供者" + mProvider);
             mStart = true;
         }

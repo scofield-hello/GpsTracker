@@ -18,6 +18,10 @@ public class ServiceIntentBuilder {
 
     private Context mContext;
 
+    private float minDistance = 0.0F;
+
+    private long minPeriod = 10000L;
+
     private String notificationContent = "正在跟踪您的位置...";
 
     private int notificationIcon = 0;
@@ -43,6 +47,8 @@ public class ServiceIntentBuilder {
         intent.putExtra(MyService.EXTRA_API, api);
         intent.putExtra(MyService.EXTRA_UID, uid);
         intent.putExtra(MyService.EXTRA_EXTRA, extra);
+        intent.putExtra(MyService.EXTRA_MIN_PERIOD, minPeriod);
+        intent.putExtra(MyService.EXTRA_MIN_DISTANCE, minDistance);
         return intent;
     }
 
@@ -63,6 +69,16 @@ public class ServiceIntentBuilder {
 
     public ServiceIntentBuilder setExtra(final String extra) {
         this.extra = extra;
+        return this;
+    }
+
+    public ServiceIntentBuilder setMinDistance(final float minDistance) {
+        this.minDistance = minDistance;
+        return this;
+    }
+
+    public ServiceIntentBuilder setMinPeriod(final long minPeriod) {
+        this.minPeriod = minPeriod;
         return this;
     }
 

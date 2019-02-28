@@ -59,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
                 .setNotificationTitle("在线教育服务")
                 .setNotificationContent("GPS服务正在跟踪...")
                 .setAk("456ftygygbubhj7uyh7k9089")
-                .setApi("http://zjsf.lookmap.net/sqjz/jhsaijs")
+                .setApi("http://192.168.0.18:8082/video/mob/locationMobServlet?action=add")
                 .setUid("Userid")
                 .setExtra("extra")
+                .setMinPeriod(5000L)
+                .setMinDistance(0.0F)
                 .setCommand(Command.START_SERVICE)
                 .build();
         if (VERSION.SDK_INT < VERSION_CODES.O) {
