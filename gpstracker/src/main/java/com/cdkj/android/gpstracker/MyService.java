@@ -105,7 +105,9 @@ public class MyService extends Service implements LocationCallback {
         Log.d(TAG, "onLocationChanged: 获取到位置信息:" + location.toString());
         String latitude = String.valueOf(location.getLatitude());
         String longitude = String.valueOf(location.getLongitude());
-        threadPool.submit(new GpsUploadTask(ak, api, uid, extra, latitude, longitude));
+        String provider = location.getProvider();
+        long timestamp = location.getTime();
+        threadPool.submit(new GpsUploadTask(ak, api, uid, extra, latitude, longitude, provider, timestamp));
     }
 
     @Override

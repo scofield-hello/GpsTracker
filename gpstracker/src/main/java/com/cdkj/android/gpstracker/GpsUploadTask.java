@@ -25,25 +25,34 @@ public class GpsUploadTask implements Runnable {
 
     private String longitude;
 
+    private String provider;
+
+    private long timestamp;
+
     private String uid;
 
-    public GpsUploadTask(String ak, String api, String uid, String extra, String latitude, String longitude) {
+    public GpsUploadTask(String ak, String api, String uid, String extra, String latitude, String longitude,
+            String provider, long timestamp) {
         this.ak = ak;
         this.api = api;
         this.uid = uid;
         this.extra = extra;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.provider = provider;
+        this.timestamp = timestamp;
     }
 
     @Override
     public void run() {
-        Map<String, Object> params = new HashMap<>(9);
+        Map<String, Object> params = new HashMap<>(11);
         params.put("ak", ak);
         params.put("uid", uid);
         params.put("extra", extra);
         params.put("latitude", latitude);
         params.put("longitude", longitude);
+        params.put("provider", provider);
+        params.put("timestamp", timestamp);
         params.put("platform", "android");
         params.put("brand", Build.BRAND);
         params.put("model", Build.MODEL);

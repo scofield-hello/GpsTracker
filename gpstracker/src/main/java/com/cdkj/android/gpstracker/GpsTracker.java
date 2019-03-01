@@ -87,12 +87,22 @@ public class GpsTracker implements LocationListener {
         }
     }
 
-    String getBestProvider() {
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);
-        criteria.setCostAllowed(true);
-        return mLocationManager.getBestProvider(criteria, true);
+    @SuppressLint("MissingPermission")
+    public void start() {
+        if (!mStart) {
+            mProvider = getBestProvider();
+            mLocationManager.requestLocationUpdates(mProvider, mPeriod, mDistance, this);
+            Log.i(TAG, "start: 开始定位, 位置提供者" + mProvider);
+            mStart = true;
+        }
+    }
+
+    public void stop() {
+        if (mStart) {
+            mLocationManager.removeUpdates(this);
+            Log.i(TAG, "start: 停止定位, 位置提供者" + mProvider);
+            mStart = false;
+        }
     }
 
     void initConfiguration(long period, float distance) {
@@ -104,21 +114,14 @@ public class GpsTracker implements LocationListener {
         return mStart;
     }
 
-    @SuppressLint("MissingPermission")
-    void start() {
-        if (!mStart) {
-            mProvider = getBestProvider();
-            mLocationManager.requestLocationUpdates(mProvider, mPeriod, mDistance, this);
-            Log.i(TAG, "start: 开始定位, 位置提供者" + mProvider);
-            mStart = true;
-        }
-    }
-
-    void stop() {
-        if (mStart) {
-            mLocationManager.removeUpdates(this);
-            Log.i(TAG, "start: 停止定位, 位置提供者" + mProvider);
-            mStart = false;
-        }
+    private String getBestProvider() {
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
+        criteria.setAltitudeRequired(false);
+        criteria.setSpeedRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        return mLocationManager.getBestProvider(criteria, true);
     }
 }
