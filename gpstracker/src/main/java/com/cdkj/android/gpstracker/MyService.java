@@ -57,11 +57,21 @@ public class MyService extends Service implements LocationCallback {
 
     private String api;
 
+    private float distanceInMi;
+
     private String extra;
 
     private GpsTracker mGpsTracker;
 
     private MyReceiver mReceiver = new MyReceiver();
+
+    private String notificationContent;
+
+    private int notificationIcon;
+
+    private String notificationTitle;
+
+    private long periodInMills;
 
     private ExecutorService threadPool = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MINUTES,
             new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
@@ -72,7 +82,6 @@ public class MyService extends Service implements LocationCallback {
     });
 
     private String uid;
-
 
     public MyService() {
     }
@@ -113,7 +122,7 @@ public class MyService extends Service implements LocationCallback {
     @Override
     public int onStartCommand(final Intent intent, final int flags, final int startId) {
         processCommand(intent);
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     protected void createNotification(Service context, int icon, String title, String content) {
@@ -172,55 +181,69 @@ public class MyService extends Service implements LocationCallback {
     protected void processCommand(final Intent intent) {
         int command = intent.getIntExtra(EXTRA_COMMAND, Command.START_SERVICE);
         Log.d(TAG, "processCommand: command=" + command);
+        loadNewIntentArgs(intent);
+        mGpsTracker.config(periodInMills, distanceInMi);
         switch (command) {
             case Command.START_SERVICE:
                 Log.d(TAG, "processCommand: 切换到前台服务...");
-                ak = intent.getStringExtra(EXTRA_AK);
-                api = intent.getStringExtra(EXTRA_API);
-                uid = intent.getStringExtra(EXTRA_UID);
-                extra = intent.getStringExtra(EXTRA_EXTRA);
-                long periodInMills = intent.getLongExtra(EXTRA_MIN_PERIOD, 10000L);
-                float distanceInMi = intent.getFloatExtra(EXTRA_MIN_DISTANCE, 0.0F);
-                int notificationIcon = intent.getIntExtra(EXTRA_NOTIFICATION_ICON, 0);
-                String notificationTitle = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE);
-                String notificationContent = intent.getStringExtra(EXTRA_NOTIFICATION_CONTENT);
-                Preconditions.checkNotNull(ak);
-                Preconditions.checkNotNull(api);
-                Preconditions.checkNotNull(uid);
-                Preconditions.checkNotNull(notificationTitle);
-                Preconditions.checkNotNull(notificationContent);
-                Preconditions.checkArgument(periodInMills >= 1000L);
-                Preconditions.checkArgument(distanceInMi >= 0.0F);
-                Preconditions.checkArgument(notificationIcon != 0);
                 createNotification(this, notificationIcon, notificationTitle, notificationContent);
-                mGpsTracker.initConfiguration(periodInMills, distanceInMi);
-                if (mGpsTracker.isStart()) {
-                    mGpsTracker.stop();
-                    mGpsTracker.start();
-                } else {
-                    mGpsTracker.start();
-                }
+                track(true);
                 break;
             case Command.STOP_SERVICE:
                 Log.d(TAG, "processCommand: 停止当前服务...");
-                mGpsTracker.stop();
+                track(false);
                 stopForeground(true);
                 stopSelf();
                 break;
             case Command.START_GPS:
                 Log.d(TAG, "processCommand: 开启位置跟踪...");
-                mGpsTracker.start();
+                createNotification(this, notificationIcon, notificationTitle, notificationContent);
+                track(true);
                 break;
             case Command.STOP_GPS:
+                createNotification(this, notificationIcon, notificationTitle, notificationContent);
                 Log.d(TAG, "processCommand: 关闭位置跟踪...");
-                mGpsTracker.stop();
+                track(false);
                 break;
             default:
                 Log.d(TAG, "processCommand: 命令不正确，停止当前服务...");
-                mGpsTracker.stop();
+                track(false);
                 stopForeground(true);
                 stopSelf();
                 break;
+        }
+    }
+
+    private void loadNewIntentArgs(final Intent intent) {
+        ak = intent.getStringExtra(EXTRA_AK);
+        api = intent.getStringExtra(EXTRA_API);
+        uid = intent.getStringExtra(EXTRA_UID);
+        extra = intent.getStringExtra(EXTRA_EXTRA);
+        periodInMills = intent.getLongExtra(EXTRA_MIN_PERIOD, 10000L);
+        distanceInMi = intent.getFloatExtra(EXTRA_MIN_DISTANCE, 0.0F);
+        notificationIcon = intent.getIntExtra(EXTRA_NOTIFICATION_ICON, 0);
+        notificationTitle = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE);
+        notificationContent = intent.getStringExtra(EXTRA_NOTIFICATION_CONTENT);
+        Preconditions.checkNotNull(ak);
+        Preconditions.checkNotNull(api);
+        Preconditions.checkNotNull(uid);
+        Preconditions.checkNotNull(notificationTitle);
+        Preconditions.checkNotNull(notificationContent);
+        Preconditions.checkArgument(notificationIcon != 0);
+        Preconditions.checkArgument(periodInMills >= 1000L);
+        Preconditions.checkArgument(distanceInMi >= 0.0F);
+    }
+
+    private void track(boolean start) {
+        if (start) {
+            if (mGpsTracker.isStart()) {
+                mGpsTracker.stop();
+            }
+            mGpsTracker.start();
+        } else {
+            if (mGpsTracker.isStart()) {
+                mGpsTracker.stop();
+            }
         }
     }
 }

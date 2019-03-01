@@ -105,7 +105,7 @@ public class GpsTracker implements LocationListener {
         }
     }
 
-    void initConfiguration(long period, float distance) {
+    void config(long period, float distance) {
         mPeriod = period;
         mDistance = distance;
     }

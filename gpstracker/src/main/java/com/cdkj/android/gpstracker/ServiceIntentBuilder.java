@@ -2,6 +2,7 @@ package com.cdkj.android.gpstracker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 /**
  * @author Nick
@@ -18,6 +19,8 @@ public class ServiceIntentBuilder {
 
     private Context mContext;
 
+    private SharedPreferences mSharedPreferences;
+
     private float minDistance = 0.0F;
 
     private long minPeriod = 10000L;
@@ -32,6 +35,7 @@ public class ServiceIntentBuilder {
 
     public ServiceIntentBuilder(Context context) {
         this.mContext = context;
+        mSharedPreferences = mContext.getSharedPreferences("gps_tracker", Context.MODE_PRIVATE);
     }
 
     public Intent build() {
@@ -40,25 +44,34 @@ public class ServiceIntentBuilder {
                 || command == Command.STOP_GPS, "不合法的command参数");
         Intent intent = new Intent(mContext, MyService.class);
         intent.putExtra(MyService.EXTRA_COMMAND, command);
-        intent.putExtra(MyService.EXTRA_NOTIFICATION_ICON, notificationIcon);
-        intent.putExtra(MyService.EXTRA_NOTIFICATION_TITLE, notificationTitle);
-        intent.putExtra(MyService.EXTRA_NOTIFICATION_CONTENT, notificationContent);
-        intent.putExtra(MyService.EXTRA_AK, ak);
-        intent.putExtra(MyService.EXTRA_API, api);
-        intent.putExtra(MyService.EXTRA_UID, uid);
-        intent.putExtra(MyService.EXTRA_EXTRA, extra);
-        intent.putExtra(MyService.EXTRA_MIN_PERIOD, minPeriod);
-        intent.putExtra(MyService.EXTRA_MIN_DISTANCE, minDistance);
+        intent.putExtra(MyService.EXTRA_NOTIFICATION_ICON,
+                mSharedPreferences.getInt("notificationIcon", notificationIcon));
+        intent.putExtra(MyService.EXTRA_NOTIFICATION_TITLE,
+                mSharedPreferences.getString("notificationTitle", notificationTitle));
+        intent.putExtra(MyService.EXTRA_NOTIFICATION_CONTENT,
+                mSharedPreferences.getString("notificationContent", notificationContent));
+        intent.putExtra(MyService.EXTRA_AK, mSharedPreferences.getString("ak", ak));
+        intent.putExtra(MyService.EXTRA_API, mSharedPreferences.getString("api", api));
+        intent.putExtra(MyService.EXTRA_UID, mSharedPreferences.getString("uid", uid));
+        intent.putExtra(MyService.EXTRA_EXTRA, mSharedPreferences.getString("extra", extra));
+        intent.putExtra(MyService.EXTRA_MIN_PERIOD, mSharedPreferences.getLong("minPeriod", minPeriod));
+        intent.putExtra(MyService.EXTRA_MIN_DISTANCE, mSharedPreferences.getFloat("minDistance", minDistance));
         return intent;
     }
 
     public ServiceIntentBuilder setAk(final String ak) {
         this.ak = ak;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString("ak", ak);
+        editor.apply();
         return this;
     }
 
     public ServiceIntentBuilder setApi(final String api) {
         this.api = api;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString("api", api);
+        editor.apply();
         return this;
     }
 
@@ -69,36 +82,57 @@ public class ServiceIntentBuilder {
 
     public ServiceIntentBuilder setExtra(final String extra) {
         this.extra = extra;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString("extra", extra);
+        editor.apply();
         return this;
     }
 
     public ServiceIntentBuilder setMinDistance(final float minDistance) {
         this.minDistance = minDistance;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putFloat("minDistance", minDistance);
+        editor.apply();
         return this;
     }
 
     public ServiceIntentBuilder setMinPeriod(final long minPeriod) {
         this.minPeriod = minPeriod;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putLong("minPeriod", minPeriod);
+        editor.apply();
         return this;
     }
 
     public ServiceIntentBuilder setNotificationContent(final String notificationContent) {
         this.notificationContent = notificationContent;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString("notificationContent", notificationContent);
+        editor.apply();
         return this;
     }
 
     public ServiceIntentBuilder setNotificationIcon(final int notificationIcon) {
         this.notificationIcon = notificationIcon;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt("notificationIcon", notificationIcon);
+        editor.apply();
         return this;
     }
 
     public ServiceIntentBuilder setNotificationTitle(final String notificationTitle) {
         this.notificationTitle = notificationTitle;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString("notificationTitle", notificationTitle);
+        editor.apply();
         return this;
     }
 
     public ServiceIntentBuilder setUid(final String uid) {
         this.uid = uid;
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString("uid", uid);
+        editor.apply();
         return this;
     }
 }
