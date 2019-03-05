@@ -17,16 +17,12 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "onReceive: ---------------收到广播:" + intent.getAction());
-        switch (intent.getAction()) {
-            case Intent.ACTION_SCREEN_ON:
-                startServiceCommand(context, Command.START_GPS);
-                break;
-            case Intent.ACTION_SCREEN_OFF:
-                startServiceCommand(context, Command.STOP_GPS);
-                break;
-            default:
-                startServiceCommand(context, Command.STOP_GPS);
-                break;
+        if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+            startServiceCommand(context, Command.START_GPS);
+        } else if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+            startServiceCommand(context, Command.STOP_GPS);
+        } else {
+            startServiceCommand(context, Command.STOP_GPS);
         }
     }
 

@@ -6,7 +6,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 
-public class HttpUtils {
+/**
+ * @author Nick
+ */
+class HttpUtils {
 
     private static final String TAG = "HttpUtils";
 
@@ -15,8 +18,8 @@ public class HttpUtils {
      *
      * @return 输入流
      */
-    public static boolean post(String path, Map<String, Object> params) {
-        StringBuffer sb = new StringBuffer();
+    static boolean post(String path, Map<String, Object> params) {
+        StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }

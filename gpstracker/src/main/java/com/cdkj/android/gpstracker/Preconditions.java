@@ -9,6 +9,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 
+/**
+ * @author Nick
+ * copy from support-v4
+ */
 @RestrictTo({Scope.LIBRARY_GROUP})
 public class Preconditions {
 

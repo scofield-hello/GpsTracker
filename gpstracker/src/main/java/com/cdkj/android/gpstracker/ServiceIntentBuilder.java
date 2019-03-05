@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
  */
 public class ServiceIntentBuilder {
 
+    private static final String PREF_NAME = "gps_tracker";
+
     private String ak;
 
     private String api;
@@ -35,7 +37,7 @@ public class ServiceIntentBuilder {
 
     public ServiceIntentBuilder(Context context) {
         this.mContext = context;
-        mSharedPreferences = mContext.getSharedPreferences("gps_tracker", Context.MODE_PRIVATE);
+        mSharedPreferences = mContext.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
     public Intent build() {

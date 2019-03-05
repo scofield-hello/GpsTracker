@@ -181,7 +181,14 @@ public class MyService extends Service implements LocationCallback {
     protected void processCommand(final Intent intent) {
         int command = intent.getIntExtra(EXTRA_COMMAND, Command.START_SERVICE);
         Log.d(TAG, "processCommand: command=" + command);
-        loadNewIntentArgs(intent);
+        try {
+            loadNewIntentArgs(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "参数传递错误", e);
+            track(false);
+            stopForeground(true);
+            stopSelf();
+        }
         mGpsTracker.config(periodInMills, distanceInMi);
         switch (command) {
             case Command.START_SERVICE:
